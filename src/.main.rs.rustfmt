@@ -1,0 +1,76 @@
+use std::io;
+
+struct Hand {
+    fingers: i32,
+}
+
+impl Hand {
+    fn new() -> Hand {
+        Hand { fingers: 2 }
+    }
+}
+
+struct Player {
+    name: String,
+    hands: [Hand; 2],
+}
+
+impl Player {
+    fn new(name: String) -> Player {
+        Player {
+            name,
+            hands: [Hand::new(), Hand::new()],
+        }
+    }
+
+    fn display(&self, is_turn: bool) {
+        println!(
+            "----- {} ({}) -----",
+            self.name,
+            if is_turn { "x" } else { " " }
+        );
+        println!(
+            "L: {}    R: {}",
+            self.hands[0].fingers, self.hands[1].fingers
+        );
+    }
+}
+
+struct Game<'a> {
+    players: [&'a Player; 2],
+    turn: i32,
+}
+
+impl<'a> Game<'a> {
+    fn new(players: [&'a Player; 2]) -> Game {
+        Game { players, turn: 0 }
+    }
+
+    fn display(&self) {
+        for (i, player) in self.players.iter().enumerate() {
+            player.display(i as i32 == self.turn);
+            println!("");
+            println!("");
+            println!("");
+        }
+    }
+
+    fn act(&self, from: i32, to: i32) {}
+}
+
+fn main() {
+    let villain = Player::new("villain".to_string());
+    let hero = Player::new("hero".to_string());
+    let players = [&villain, &hero];
+    let game = Game::new(players);
+
+    let mut input = String::new();
+
+    game.display();
+
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Unable to read input");
+
+    let input = input.trim();
+}
